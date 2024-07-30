@@ -31,10 +31,10 @@ if (!during_initial_install()) {
 }
 
 $plugin = new stdClass();
-$plugin->version = 20240723000;
+$plugin->version = 20240730000;
 $var = 'version';
-$plugin->$var = 2024072300;
-$plugin->$var = 2024072300;
+$plugin->$var = 2024073000;
+$plugin->$var = 2024073000;
 $plugin->requires = 2016061505;
 $plugin->component = 'plagiarism_originality';
-$plugin->release = '7.3';
+$plugin->release = '7.4';

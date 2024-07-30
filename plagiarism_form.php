@@ -49,6 +49,8 @@ class plagiarism_setup_form extends moodleform {
                 $mform->createElement('radio', 'server', '', get_string('production_endpoint', 'plagiarism_originality'), 'live');
         $radioarray[] = $mform->createElement('radio', 'server', '', get_string('test_endpoint', 'plagiarism_originality'), 'test');
 
+        $mform->addElement('static', 'version', get_string('version'));
+
         $mform->setDefault('server', 'live');
         $mform->addGroup($radioarray, 'radioar', get_string('plugin_server_type', 'plagiarism_originality'), ['<br /><br />'],
                 false);
