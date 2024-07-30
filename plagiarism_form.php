@@ -40,6 +40,8 @@ class plagiarism_setup_form extends moodleform {
      * Define the form elements for the plugin settings.
      */
     public function definition() {
+        global $plugin;
+
         $mform =& $this->_form;
 
         $mform->addElement('header', 'plagiarism_originalityconfig', get_string('plugin_settings', 'plagiarism_originality'));
@@ -49,7 +51,7 @@ class plagiarism_setup_form extends moodleform {
                 $mform->createElement('radio', 'server', '', get_string('production_endpoint', 'plagiarism_originality'), 'live');
         $radioarray[] = $mform->createElement('radio', 'server', '', get_string('test_endpoint', 'plagiarism_originality'), 'test');
 
-        $mform->addElement('static', 'version', get_string('version'));
+        $mform->addElement('static', 'versionrelease', get_string('version'), $plugin->release . '(' . $plugin->version . ')');
 
         $mform->setDefault('server', 'live');
         $mform->addGroup($radioarray, 'radioar', get_string('plugin_server_type', 'plagiarism_originality'), ['<br /><br />'],
