@@ -40,6 +40,11 @@ require_once($CFG->dirroot . '/plagiarism/originality/locallib.php');
 class plagiarism_plugin_originality extends plagiarism_plugin {
 
     /**
+     * @var plagiarism_plugin_originality_utils
+     */
+    public $utils;
+
+    /**
      * Constructor function for the class.
      * Initializes the plagiarism_plugin_originality_utils object for accessing utility functions.
      *
@@ -633,7 +638,7 @@ class plagiarism_plugin_originality extends plagiarism_plugin {
 
         if (isset($eventdata['objecttable']) && $eventdata['objecttable'] == 'assign_submission') {
             $userid = $eventdata['userid'];
-            list ($course, $cm) = get_course_and_cm_from_cmid($eventdata['contextinstanceid'], 'assign');
+            [$course, $cm] = get_course_and_cm_from_cmid($eventdata['contextinstanceid'], 'assign');
             $context = context_module::instance($cm->id);
             $assign = new assign($context, $cm, $course);
             $cmod = $assign->get_instance();
@@ -717,7 +722,7 @@ class plagiarism_plugin_originality extends plagiarism_plugin {
         if ($eventdata['contextinstanceid'] && $eventdata['contextinstanceid'] != 1) {
             require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
-            list ($course, $cm) = get_course_and_cm_from_cmid($eventdata['contextinstanceid'], 'assign');
+            [$course, $cm] = get_course_and_cm_from_cmid($eventdata['contextinstanceid'], 'assign');
             $assign = $DB->get_record('assign', ['id' => $cm->instance]);
             return $assign;
         }
@@ -759,7 +764,7 @@ function plagiarism_originality_coursemodule_standard_elements($formwrapper, $mf
     if ($config->enabled) {
 
         if ($cmid) {
-            list ($course, $cm) = get_course_and_cm_from_cmid($cmid, 'assign');
+            [$course, $cm] = get_course_and_cm_from_cmid($cmid, 'assign');
             $hassubmissions = $DB->get_records('assign_submission', ['assignment' => $cm->instance]);
 
             if ($hassubmissions) {

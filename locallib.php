@@ -25,6 +25,11 @@
 class plagiarism_plugin_originality_utils {
 
     /**
+     * @var false|mixed|object|string
+     */
+    public $config;
+
+    /**
      * Constructor function for the class.
      * Initializes the configuration settings for the plagiarism_originality plugin.
      *
