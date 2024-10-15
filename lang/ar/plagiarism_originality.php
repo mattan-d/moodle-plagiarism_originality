@@ -22,38 +22,34 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'الأصالة - كشف النسخ';
-$string['originality'] = 'مكون الأصالة - كشف النسخ في المستندات';
-$string['originality_help'] =
-        'الإعداد لكشف النسخ في الأعمال النصية (النص). يجب عدم استخدامه للأعمال بلغة أخرى أو لأعمال هندسية مختلفة لأن الآلية غير مصممة لذلك.';
-$string['originality_shortname'] = 'الأصالة';
-$string['plugin_server_type'] = 'خادم الأصالة';
-$string['plugin_settings'] = 'إعدادات الأصالة';
-$string['plugin_enabled'] = 'تمكين المكوّن الإضافي';
-$string['plugin_connected'] = 'المفتاح السري صحيح، متصل بنظام الأصالة';
-$string['student_disclosure'] =
-        "يجب عليك وضع علامة √ في المكان المناسب لإرسال المهمة لفحص الأصالة. بدون وضع علامة، لن يتمكن من تقديم هذه المهمة.<br>هذا التقديم أصلي، هو ملكي، وتم إعداده بواسطتي وأتحمل المسؤولية عن أصالة المحتوى المكتوب به.<br><br>باستثناء الأماكن التي ذكرت فيها أن العمل تم إعداده من قبل آخرين ويوجد رابط مناسب في الببليوغرافيا أو في المكان المطلوب لذلك.<br><br>أنا على علم وموافق أنه سيتم فحص هذه المهمة لكشف السرقة الأدبية من قبل شركة الأصالة وأوافق على <a rel='external' href='https://originality.world/termsOfUseAR.html' target='_blank' style='text-decoration:underline'>شروط الاستخدام</a>.";
-$string['secret'] = 'مفتاح الاستخدام';
-$string['key'] = 'مفتاح الاستخدام';
-$string['key_help'] = 'يجب أن يكون لديك مفتاح الاستخدام لاستخدام المكوّن الإضافي.';
-$string['saved_failed'] = 'مفتاح الاستخدام الذي تم إدخاله غير صحيح، المكوّن الإضافي غير مفعّل.';
-$string['checking_inprocessmsg'] = 'قيد الفحص';
-$string['checking_unprocessable'] = 'غير قابل للمعالجة';
-$string['submitted_before_activation'] = 'تم تقديمه قبل تفعيل المكوّن الإضافي';
-$string['service_is_inactive'] = 'مكوّن الأصالة غير مفعّل. يُرجى الاتصال بمسؤول Moodle.';
-$string['warning_message'] = "يجب وضع علامة على زر الموافقة ('أنا مدرك وموافق') لتمكين زر الإرسال.";
-$string['previous_submissions'] = 'هناك تسليمات سابقة موجودة. يجب على هؤلاء الطلاب إعادة تسليم العمل الخاص بهم لفحص أصالته.';
-$string['production_endpoint'] =
-        '<b>خادم الأصالة</b>&nbsp;&nbsp;<span style="font-size:14px;">لإرسال الأعمال إلى خادم الإنتاج في الأصالة.</span>';
-$string['test_endpoint'] =
-        '<b>خادم الاختبار</b>&nbsp;&nbsp;<span style="font-size:14px;">لإرسال الأعمال إلى خادم الاختبار في الأصالة. يجب تحديد هذا فقط بعد التنسيق مع الأصالة.</span>';
 $string['check_ghostwriter'] = 'مكون كشف الكتّاب الظلاليين للأعمال الكبيرة';
 $string['check_ghostwriter_help'] =
         'يمكن تمكين هذا المكوّن الإضافي فقط بعد التنسيق مع الأصالة. بدون تنسيق مسبق، لن يعمل المكوّن الإضافي.';
 $string['check_ghostwriter_label'] = 'كتّاب الظلال';
+$string['checking_inprocessmsg'] = 'قيد الفحص';
+$string['checking_unprocessable'] = 'غير قابل للمعالجة';
+$string['default_settings_assignments'] = 'تمكين الفحص للمهام الجديدة';
 $string['ghostwriter_enabled'] = 'تمكين فحص كتّاب الظلال';
 $string['ghostwriter_failed_message'] = 'غير قادر على تنفيذ فحص كتّاب الظلال للنص العبري';
-$string['pdf:filename'] = 'عرض تقرير الأصالة';
-$string['default_settings_assignments'] = 'تمكين الفحص للمهام الجديدة';
+$string['key'] = 'مفتاح الاستخدام';
+$string['key_help'] = 'يجب أن يكون لديك مفتاح الاستخدام لاستخدام المكوّن الإضافي.';
 $string['merge_reports'] = 'دمج ملفات التقارير القديمة في هيكل جديد';
+$string['pdf:filename'] = 'عرض تقرير الأصالة';
+$string['plugin_connected'] = 'المفتاح السري صحيح، متصل بنظام الأصالة';
+$string['plugin_enabled'] = 'تمكين المكوّن الإضافي';
+$string['plugin_server_type'] = 'خادم الأصالة';
+$string['plugin_settings'] = 'إعدادات الأصالة';
+$string['pluginname'] = 'الأصالة - كشف النسخ';
+$string['previous_submissions'] = 'هناك تسليمات سابقة موجودة. يجب على هؤلاء الطلاب إعادة تسليم العمل الخاص بهم لفحص أصالته.';
+$string['production_endpoint'] =
+        '<b>خادم الأصالة</b>&nbsp;&nbsp;<span style="font-size:14px;">لإرسال الأعمال إلى خادم الإنتاج في الأصالة.</span>';
+$string['saved_failed'] = 'مفتاح الاستخدام الذي تم إدخاله غير صحيح، المكوّن الإضافي غير مفعّل.';
+$string['secret'] = 'مفتاح الاستخدام';
+$string['service_is_inactive'] = 'مكوّن الأصالة غير مفعّل. يُرجى الاتصال بمسؤول Moodle.';
 $string['stuck_submissions'] = 'محاولة إعادة تقديم الاستلامات المعلقة';
+$string['student_disclosure'] =
+        "يجب عليك وضع علامة √ في المكان المناسب لإرسال المهمة لفحص الأصالة. بدون وضع علامة، لن يتمكن من تقديم هذه المهمة.<br>هذا التقديم أصلي، هو ملكي، وتم إعداده بواسطتي وأتحمل المسؤولية عن أصالة المحتوى المكتوب به.<br><br>باستثناء الأماكن التي ذكرت فيها أن العمل تم إعداده من قبل آخرين ويوجد رابط مناسب في الببليوغرافيا أو في المكان المطلوب لذلك.<br><br>أنا على علم وموافق أنه سيتم فحص هذه المهمة لكشف السرقة الأدبية من قبل شركة الأصالة وأوافق على <a rel='external' href='https://originality.world/termsOfUseAR.html' target='_blank' style='text-decoration:underline'>شروط الاستخدام</a>.";
+$string['submitted_before_activation'] = 'تم تقديمه قبل تفعيل المكوّن الإضافي';
+$string['test_endpoint'] =
+        '<b>خادم الاختبار</b>&nbsp;&nbsp;<span style="font-size:14px;">لإرسال الأعمال إلى خادم الاختبار في الأصالة. يجب تحديد هذا فقط بعد التنسيق مع الأصالة.</span>';
+$string['warning_message'] = "يجب وضع علامة على زر الموافقة ('أنا مدرك وموافق') لتمكين زر الإرسال.";
