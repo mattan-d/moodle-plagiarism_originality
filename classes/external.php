@@ -75,7 +75,7 @@ class plagiarism_originality_external extends external_api {
                 'docId' => $docid,
                 'content' => $content,
                 'grade' => $grade,
-                'type' => $type
+                'type' => $type,
         ]);
 
         $context = context_system::instance();
@@ -88,7 +88,7 @@ class plagiarism_originality_external extends external_api {
 
         $submission = $DB->get_record('plagiarism_originality_sub', [
                 'docid' => $params['docId'],
-                'ghostwriter' => $params['type']
+                'ghostwriter' => $params['type'],
         ]);
 
         if (!$submission) {
