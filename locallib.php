@@ -103,7 +103,7 @@ class plagiarism_plugin_originality_utils {
         if (!$cm) {
             return false;
         }
-        
+
         $context = \context_module::instance($data->cm);
         // Prepare file record object.
         $fileinfo = [
