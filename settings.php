@@ -48,6 +48,10 @@ if (($data = $form->get_data()) && confirm_sesskey()) {
         $data->enabled = 0;
     }
 
+    if (!isset($data->default_use)) {
+        $data->default_use = 0;
+    }
+
     if (!isset($data->check_ghostwriter)) {
         $data->check_ghostwriter = 0;
     }
