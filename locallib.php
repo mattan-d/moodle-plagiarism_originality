@@ -99,6 +99,11 @@ class plagiarism_plugin_originality_utils {
             return false;
         }
 
+        $cm = $DB->get_record('course_modules', ['id' => $data->cm]);
+        if (!$cm) {
+            return false;
+        }
+        
         $context = \context_module::instance($data->cm);
         // Prepare file record object.
         $fileinfo = [

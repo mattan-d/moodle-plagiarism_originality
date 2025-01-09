@@ -31,9 +31,9 @@ if (!during_initial_install()) {
 }
 
 $plugin = new stdClass();
-$plugin->version = 2024101500;
+$plugin->version = 2025010900;
 $var = 'version';
-$plugin->$var = 2024101500;
+$plugin->$var = 2025010900;
 $plugin->requires = 2016061505;
 $plugin->component = 'plagiarism_originality';
-$plugin->release = '7.5';
+$plugin->release = '7.6';
