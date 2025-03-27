@@ -156,7 +156,7 @@ class plagiarism_plugin_originality_utils {
             return false;
         }
 
-        if ($output['Pong']) {
+        if (isset($output['Pong'])) {
             return true;
         } else {
             return false;
@@ -203,7 +203,7 @@ class plagiarism_plugin_originality_utils {
         $jsonresult = $curl->post($url, $jsondata, $options);
         $output = json_decode($jsonresult, true);
 
-        if ($output['success']) {
+        if (isset($output['success'])) {
             return true;
         } else {
             return false;

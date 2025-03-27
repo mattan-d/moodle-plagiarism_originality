@@ -256,5 +256,29 @@ function xmldb_plagiarism_originality_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint(true, 2023072000, 'plagiarism', 'originality');
     }
 
+    if ($oldversion < 2025012900) {
+        // Define table plagiarism_originality_stats.
+        $table = new xmldb_table('plagiarism_originality_stats');
+
+        // Add fields.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('subid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Define keys.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_index('userid_idx', XMLDB_INDEX_NOTUNIQUE, ['userid']);
+        $table->add_index('subid_idx', XMLDB_INDEX_NOTUNIQUE, ['subid']);
+
+        // Create the table if it does not exist.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Savepoint reached.
+        upgrade_plugin_savepoint(true, 2025012900, 'plagiarism', 'originality');
+    }
+
     return true;
 }

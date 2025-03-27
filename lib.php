@@ -865,6 +865,7 @@ function plagiarism_originality_coursemodule_edit_post_actions($data, $course) {
  * @return bool false if the file not found, just send the file otherwise and do not return anything
  */
 function plagiarism_originality_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
+    global $USER, $DB;
 
     // Check the contextlevel is as expected - if your plugin is a block, this becomes CONTEXT_BLOCK, etc.
     if ($context->contextlevel != CONTEXT_MODULE) {
@@ -897,6 +898,24 @@ function plagiarism_originality_pluginfile($course, $cm, $context, $filearea, $a
             $filepath = '/';
         } else {
             $filepath = '/' . implode('/', $args) . '/';
+        }
+
+        $utils = new plagiarism_plugin_originality_utils;
+        if ($itemid) {
+            $submissions = $utils->get_submission([
+                    'id' => $itemid,
+            ]);
+
+            foreach ($submissions as $submission) {
+
+                $stats = new stdClass();
+
+                $stats->userid = $USER->id;
+                $stats->timecreated = time();
+                $stats->subid = $submission->id;
+
+                $DB->insert_record('plagiarism_originality_stats', $stats);
+            }
         }
 
         // Retrieve the file from the Files API.
