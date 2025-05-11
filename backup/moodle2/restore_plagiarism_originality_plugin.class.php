@@ -33,7 +33,7 @@ class restore_plagiarism_originality_plugin extends restore_plagiarism_plugin {
     protected function define_module_plugin_structure() {
         $paths = [];
         $paths[] = new restore_path_element('originality_mods', $this->get_pathfor('originality_mods/originality_mod'));
-        $paths[] = new restore_path_element('originality_subs', $this->get_pathfor('originality_subs/originality_sub'));
+        //$paths[] = new restore_path_element('originality_subs', $this->get_pathfor('originality_subs/originality_sub'));
 
         return $paths;
     }
@@ -57,6 +57,7 @@ class restore_plagiarism_originality_plugin extends restore_plagiarism_plugin {
     /**
      * Processes the submission for the originality check in the plagiarism module.
      * This function takes the submitted data and inserts it into the database table 'plagiarism_originality_sub'.
+     *
      * @param object $data The data object containing the submission information.
      * @return void
      * @since Moodle 3.1
