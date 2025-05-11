@@ -110,6 +110,7 @@ class plagiarism_plugin_originality extends plagiarism_plugin {
 
             // Submissions with files attached.
             $submissions = $this->utils->get_submission([
+                    'cm' => $output->cmid,
                     'assignment' => $output->cm->instance,
                     'userid' => $output->userid,
                     'fileid' => $fileid,
@@ -133,6 +134,7 @@ class plagiarism_plugin_originality extends plagiarism_plugin {
             }
 
             $submissions = $this->utils->get_submission([
+                    'cm' => $output->cmid,
                     'assignment' => $output->cm->instance,
                     'userid' => $output->userid,
                     'fileid' => '-1',
