@@ -36,4 +36,4 @@ $var = 'version';
 $plugin->$var = 2025051100;
 $plugin->requires = 2016061505;
 $plugin->component = 'plagiarism_originality';
-$plugin->release = '7.7';
+$plugin->release = '7.8';
