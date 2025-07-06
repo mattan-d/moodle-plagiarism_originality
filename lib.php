@@ -316,7 +316,6 @@ class plagiarism_plugin_originality extends plagiarism_plugin {
         $curl->setHeader($header);
         $jsonresult = $curl->post($url, $jsondata, $options);
         $output = json_decode($jsonresult);
-        print_r($output);
 
         if (isset($output->Id)) {
             $context = context_course::instance($data->courseid);
