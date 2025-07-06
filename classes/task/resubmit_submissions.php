@@ -58,15 +58,11 @@ class resubmit_submissions extends \core\task\scheduled_task {
         $lib = new \plagiarism_plugin_originality();
         $oneweekago = time() - (7 * 24 * 60 * 60); // 7 days ago
 
-        $conditions = [
-                'status' => 0
-        ];
-
-        // Use SQL directly to add the created > timestamp condition
-        $where = "status = :status AND created >= :createdsince";
+        $where = "status = :status AND created >= :createdsince AND docid <= :maxdocid";
         $params = [
                 'status' => 0,
-                'createdsince' => $oneweekago
+                'createdsince' => $oneweekago,
+                'maxdocid' => 0
         ];
 
         $submissions = $DB->get_records_select(
