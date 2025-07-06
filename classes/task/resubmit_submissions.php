@@ -56,7 +56,28 @@ class resubmit_submissions extends \core\task\scheduled_task {
         global $DB;
 
         $lib = new \plagiarism_plugin_originality();
-        $submissions = $DB->get_records('plagiarism_originality_sub', ['status' => 0], 'updated DESC', '*', 0, 10);
+        $oneweekago = time() - (7 * 24 * 60 * 60); // 7 days ago
+
+        $conditions = [
+                'status' => 0
+        ];
+
+        // Use SQL directly to add the created > timestamp condition
+        $where = "status = :status AND created >= :createdsince";
+        $params = [
+                'status' => 0,
+                'createdsince' => $oneweekago
+        ];
+
+        $submissions = $DB->get_records_select(
+                'plagiarism_originality_sub',
+                $where,
+                $params,
+                'updated DESC',
+                '*',
+                0,
+                10
+        );
 
         $tmp = [];
         if (!$submissions) {
