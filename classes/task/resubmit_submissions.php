@@ -81,6 +81,11 @@ class resubmit_submissions extends \core\task\scheduled_task {
 
         foreach ($submissions as $submission) {
 
+            if ($submission->attempts > 3) {
+                mtrace('Task: Submission #' . $submission->id . ' has been submitted more than 3 times.');
+                continue;
+            }
+
             if (!is_array($tmp[$submission->userid])) {
                 $tmp[$submission->userid] = [];
             }
