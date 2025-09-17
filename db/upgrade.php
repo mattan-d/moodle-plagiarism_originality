@@ -108,7 +108,6 @@ function xmldb_plagiarism_originality_upgrade($oldversion = 0) {
             $dbman->create_table($table);
         }
 
-        // Define table plagiarism_originality_cnf.
         $table = new xmldb_table('plagiarism_originality_cnf');
         if ($dbman->table_exists($table)) {
 
@@ -118,9 +117,21 @@ function xmldb_plagiarism_originality_upgrade($oldversion = 0) {
                 $dbman->drop_field($table, $field);
             }
 
-            // Launch rename field ischeck.
-            $field = new xmldb_field('value', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, null);
-            $dbman->rename_field($table, $field, 'ischeck');
+            // Check if 'value' field exists before renaming to 'ischeck'
+            $valuefield = new xmldb_field('value');
+            $ischeckfield = new xmldb_field('ischeck');
+
+            if ($dbman->field_exists($table, $valuefield) && !$dbman->field_exists($table, $ischeckfield)) {
+                // Rename field value to ischeck with proper type definition
+                $newfield = new xmldb_field('ischeck', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0);
+                $dbman->rename_field($table, $valuefield, 'ischeck');
+                // Ensure the field has the correct definition
+                $dbman->change_field_type($table, $newfield);
+            } else if (!$dbman->field_exists($table, $ischeckfield)) {
+                // Add ischeck field if it doesn't exist
+                $newfield = new xmldb_field('ischeck', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0);
+                $dbman->add_field($table, $newfield);
+            }
 
             // Conditionally launch add field ischeckgw.
             $field = new xmldb_field('ischeckgw', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0, 'ischeck');
