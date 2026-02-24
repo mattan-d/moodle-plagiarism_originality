@@ -117,20 +117,23 @@ function xmldb_plagiarism_originality_upgrade($oldversion = 0) {
                 $dbman->drop_field($table, $field);
             }
 
-            // Check if 'value' field exists before renaming to 'ischeck'
+            // Migrate 'value' to 'ischeck' without in-place type change (avoids "Truncated incorrect INTEGER value").
             $valuefield = new xmldb_field('value');
-            $ischeckfield = new xmldb_field('ischeck');
+            $ischeckfield = new xmldb_field('ischeck', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0);
 
             if ($dbman->field_exists($table, $valuefield) && !$dbman->field_exists($table, $ischeckfield)) {
-                // Rename field value to ischeck with proper type definition
-                $newfield = new xmldb_field('ischeck', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0);
-                $dbman->rename_field($table, $valuefield, 'ischeck');
-                // Ensure the field has the correct definition
-                $dbman->change_field_type($table, $newfield);
+                // Add new integer column, then migrate data, then drop old column.
+                $dbman->add_field($table, $ischeckfield);
+                // Convert string 'value' to integer ischeck (safe for any char/varchar content).
+                // Use backticks for column name as 'value' is reserved in MySQL.
+                $sql = "UPDATE {" . $table->getName() . "} SET ischeck = CASE
+                    WHEN TRIM(`value`) = '1' THEN 1
+                    WHEN LOWER(TRIM(`value`)) IN ('true', 'on', 'yes') THEN 1
+                    ELSE 0 END";
+                $DB->execute($sql);
+                $dbman->drop_field($table, $valuefield);
             } else if (!$dbman->field_exists($table, $ischeckfield)) {
-                // Add ischeck field if it doesn't exist
-                $newfield = new xmldb_field('ischeck', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0);
-                $dbman->add_field($table, $newfield);
+                $dbman->add_field($table, $ischeckfield);
             }
 
             // Conditionally launch add field ischeckgw.
