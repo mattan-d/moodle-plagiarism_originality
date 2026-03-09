@@ -41,13 +41,13 @@ use core_privacy\local\request\writer;
  */
 class provider implements
         // This plugin has data.
-        core_privacy\local\metadata\provider,
+        \core_privacy\local\metadata\provider,
 
         // This plugin currently implements the original plugin\provider interface.
-        core_privacy\local\request\plugin\provider,
+        \core_privacy\local\request\plugin\provider,
 
         // This plugin is capable of determining which users have data within it.
-        core_privacy\local\request\core_userlist_provider {
+        \core_privacy\local\request\core_userlist_provider {
 
     /**
      * Return the fields which contain personal data.
@@ -88,6 +88,7 @@ class provider implements
                 WHERE pos.userid = :userid";
         $contextlist = new contextlist();
         $contextlist->add_from_sql($sql, $params);
+        return $contextlist;
     }
 
     /**
