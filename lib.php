@@ -40,6 +40,25 @@ require_once($CFG->dirroot . '/plagiarism/originality/locallib.php');
 class plagiarism_plugin_originality extends plagiarism_plugin {
 
     /**
+     * Grading table: latest assign_submission per user for the current cm (one SQL batch per request).
+     *
+     * @var array|null
+     */
+    private static $gradingassignlatestbyuser = null;
+
+    /**
+     * @var int|null
+     */
+    private static $gradingassigncachecmid = null;
+
+    /**
+     * assignsubmission_onlinetext row per assignment id (avoid repeated identical query per student row).
+     *
+     * @var array
+     */
+    private static $gradingonlinetextbyassign = [];
+
+    /**
      * @var plagiarism_plugin_originality_utils
      */
     public $utils;
@@ -52,6 +71,36 @@ class plagiarism_plugin_originality extends plagiarism_plugin {
      */
     public function __construct() {
         $this->utils = new plagiarism_plugin_originality_utils;
+    }
+
+    /**
+     * Prime and read cached latest submission status for the assignment grading table (N+1 mitigation).
+     *
+     * @param int $cmid Course module id.
+     * @param int $userid User id.
+     * @return false|stdClass Status row with ->status and ->assignment, or false.
+     */
+    private static function grading_latest_assign_submission($cmid, $userid) {
+        global $DB;
+
+        if (self::$gradingassigncachecmid !== $cmid || self::$gradingassignlatestbyuser === null) {
+            self::$gradingassigncachecmid = $cmid;
+            self::$gradingassignlatestbyuser = [];
+            self::$gradingonlinetextbyassign = [];
+
+            $records = $DB->get_records_sql(
+                    "SELECT s.userid, s.status, s.assignment
+                       FROM {assign_submission} s
+                       JOIN {course_modules} m ON m.instance = s.assignment AND m.id = ?
+                      WHERE s.latest = 1",
+                    [$cmid]
+            );
+            foreach ($records as $r) {
+                self::$gradingassignlatestbyuser[$r->userid] = $r;
+            }
+        }
+
+        return self::$gradingassignlatestbyuser[$userid] ?? false;
     }
 
     /**
@@ -181,17 +230,19 @@ class plagiarism_plugin_originality extends plagiarism_plugin {
         } else {
 
             if ($output->userid) {
-                $status = $DB->get_record_sql('SELECT s.status, s.assignment
-                                FROM {assign_submission} s
-                                LEFT JOIN {course_modules} m ON m.instance = s.assignment
-                                WHERE m.id = ? AND s.userid = ? AND s.latest = 1', [$output->cmid, $output->userid]);
+                $status = self::grading_latest_assign_submission($output->cmid, $output->userid);
 
                 if ($status && $status->status == 'draft') {
                     return;
                 }
 
-                if ($onlinetext = $DB->get_record('assignsubmission_onlinetext', ['assignment' => $status->assignment])) {
-                    if (!$onlinetext->onlinetext) {
+                if ($status) {
+                    if (!array_key_exists($status->assignment, self::$gradingonlinetextbyassign)) {
+                        self::$gradingonlinetextbyassign[$status->assignment] = $DB->get_record('assignsubmission_onlinetext',
+                                ['assignment' => $status->assignment]) ?: false;
+                    }
+                    $onlinetext = self::$gradingonlinetextbyassign[$status->assignment];
+                    if ($onlinetext && !$onlinetext->onlinetext) {
                         $status->status = 'empty';
                     }
                 }

@@ -25,6 +25,20 @@
 class plagiarism_plugin_originality_utils {
 
     /**
+     * In-request batch of latest originality rows per (userid, fileid, ghostwriter), keyed by "cmid:assigninstance".
+     *
+     * @var array
+     */
+    protected static $submissionbatch = [];
+
+    /**
+     * In-request cache for pluginfile URLs built in get_file() (same submission passed twice per row for link + icon).
+     *
+     * @var array
+     */
+    protected static $fileurlcache = [];
+
+    /**
      * @var false|mixed|object|string
      */
     public $config;
@@ -80,6 +94,10 @@ class plagiarism_plugin_originality_utils {
 
         global $DB;
 
+        if (!empty($data->id) && isset(self::$fileurlcache[$data->id])) {
+            return self::$fileurlcache[$data->id];
+        }
+
         $fs = get_file_storage();
 
         if (!$data->cm && $data->assignment) {
@@ -121,6 +139,9 @@ class plagiarism_plugin_originality_utils {
         if ($file) {
             $url = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(),
                     $file->get_itemid(), $file->get_filepath(), $file->get_filename(), false);
+            if (!empty($data->id)) {
+                self::$fileurlcache[$data->id] = $url;
+            }
             return $url;
         }
     }
@@ -291,6 +312,51 @@ class plagiarism_plugin_originality_utils {
     }
 
     /**
+     * Load all originality submission rows for one assignment into {@see self::$submissionbatch} (one query per page).
+     *
+     * @param int $cmid Course module id.
+     * @param int $assignmentid Assign instance id.
+     * @return void
+     */
+    protected function prime_submission_batch($cmid, $assignmentid) {
+        $batchkey = $cmid . ':' . $assignmentid;
+        if (isset(self::$submissionbatch[$batchkey])) {
+            return;
+        }
+
+        global $DB;
+
+        $rows = $DB->get_records_sql(
+                "SELECT * FROM {plagiarism_originality_sub}
+                  WHERE cm = ? AND assignment = ?
+                  ORDER BY id DESC",
+                [$cmid, $assignmentid]
+        );
+
+        // Latest row per (userid, fileid, ghostwriter) — same result as two get_records(..., 1) calls per lookup.
+        $latest = [];
+        foreach ($rows as $row) {
+            $dedupekey = $row->userid . '|' . $row->fileid . '|' . $row->ghostwriter;
+            if (!isset($latest[$dedupekey])) {
+                $latest[$dedupekey] = $row;
+            }
+        }
+
+        $nested = [];
+        foreach ($latest as $row) {
+            if (!isset($nested[$row->userid])) {
+                $nested[$row->userid] = [];
+            }
+            if (!isset($nested[$row->userid][$row->fileid])) {
+                $nested[$row->userid][$row->fileid] = [];
+            }
+            $nested[$row->userid][$row->fileid][$row->ghostwriter] = $row;
+        }
+
+        self::$submissionbatch[$batchkey] = $nested;
+    }
+
+    /**
      * Get submission data from the database based on the provided criteria.
      *
      * @param array $data An array of criteria for filtering the submissions.
@@ -301,6 +367,26 @@ class plagiarism_plugin_originality_utils {
         global $DB;
 
         if (!$all) {
+            // Lookups by primary key or partial criteria (e.g. pluginfile) must keep the original query path.
+            $canbatch = !isset($data['id']) && isset($data['cm']) && isset($data['assignment']) &&
+                    isset($data['userid']) && array_key_exists('fileid', $data);
+
+            if ($canbatch) {
+                $this->prime_submission_batch((int) $data['cm'], (int) $data['assignment']);
+                $batchkey = (int) $data['cm'] . ':' . (int) $data['assignment'];
+                $userid = (int) $data['userid'];
+                $fileid = (int) $data['fileid'];
+                $output = [];
+                if (isset(self::$submissionbatch[$batchkey][$userid][$fileid])) {
+                    foreach ([0, 1] as $gw) {
+                        if (isset(self::$submissionbatch[$batchkey][$userid][$fileid][$gw])) {
+                            $output[] = self::$submissionbatch[$batchkey][$userid][$fileid][$gw];
+                        }
+                    }
+                }
+                return $output;
+            }
+
             $data['ghostwriter'] = 0;
             $tmp = $DB->get_records('plagiarism_originality_sub', $data, 'id DESC', '*', 0, 1);
 
