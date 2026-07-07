@@ -398,12 +398,19 @@ class plagiarism_plugin_originality extends plagiarism_plugin {
             $groupmembers = $DB->get_records('groups_members', ['groupid' => $submission->groupid]);
 
             $groupmemberids = array_column($groupmembers, 'userid');
+
+            if (empty($groupmemberids)) {
+                return true;
+            }
+
+            list($insql, $inparams) = $DB->get_in_or_equal($groupmemberids);
+            $params = array_merge([$submission->assignment], $inparams);
             $submittedmemberids =
-                    $DB->get_fieldset_sql('SELECT userid FROM {assign_submission} WHERE assignment = ? AND' .
-                            'latest = 1 AND' .
-                            'status = \'submitted\' AND' .
-                            'userid IN (?)',
-                            [$submission->assignment, $groupmemberids]);
+                    $DB->get_fieldset_sql('SELECT userid FROM {assign_submission} WHERE assignment = ? ' .
+                            'AND latest = 1 ' .
+                            'AND status = \'submitted\' ' .
+                            'AND userid ' . $insql,
+                            $params);
 
             if (count($submittedmemberids) != count($groupmembers)) {
                 return false;
