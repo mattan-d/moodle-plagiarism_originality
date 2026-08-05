@@ -29,8 +29,8 @@ $tasks = [
         [
                 'classname' => 'plagiarism_originality\task\resubmit_submissions',
                 'blocking' => 0,
-                'minute' => '*',
-                'hour' => '*',
+                'minute' => '0',
+                'hour' => '2',
                 'day' => '*',
                 'month' => '*',
                 'dayofweek' => '*',

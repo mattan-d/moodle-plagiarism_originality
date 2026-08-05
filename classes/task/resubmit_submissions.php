@@ -56,12 +56,13 @@ class resubmit_submissions extends \core\task\scheduled_task {
         global $DB;
 
         $lib = new \plagiarism_plugin_originality();
-        $oneweekago = time() - (7 * 24 * 60 * 60); // 7 days ago
+        $fortyeighthoursago = time() - (48 * 60 * 60); // Last 48 hours only.
         $maxattempts = 3;
 
-        $where = "created >= :createdsince AND docid <= :maxdocid AND attempts <= :maxattempts AND status = :status";
+        // attempts < maxattempts: after 3 tries, do not retry again.
+        $where = "created >= :createdsince AND docid <= :maxdocid AND attempts < :maxattempts AND status = :status";
         $params = [
-                'createdsince' => $oneweekago,
+                'createdsince' => $fortyeighthoursago,
                 'maxdocid' => 0,
                 'maxattempts' => $maxattempts,
                 'status' => 0

@@ -294,5 +294,12 @@ function xmldb_plagiarism_originality_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint(true, 2025012900, 'plagiarism', 'originality');
     }
 
+    if ($oldversion < 2026080500) {
+        // Reset scheduled tasks so resubmit_submissions defaults to once nightly at 02:00.
+        \core\task\manager::reset_scheduled_tasks_for_component('plagiarism_originality');
+
+        upgrade_plugin_savepoint(true, 2026080500, 'plagiarism', 'originality');
+    }
+
     return true;
 }
