@@ -115,16 +115,22 @@ class plagiarism_plugin_originality extends plagiarism_plugin {
         $output = new stdClass();
         $output->cmid = $linkarray['cmid'];
 
-        // Set static variables.
-        static $cm;
-        static $allow;
-        if (empty($cm)) {
+        // Cache per course module. Originality only applies to assignments; other
+        // activities (e.g. quiz essay responses) must not re-query every render.
+        static $cmcaches = [];
+        if (!array_key_exists($output->cmid, $cmcaches)) {
             $cm = get_coursemodule_from_id('assign', $output->cmid);
-            $allow = $DB->get_record('plagiarism_originality_mod', ['cm' => $output->cmid]);
+            $cmcaches[$output->cmid] = $cm
+                    ? [$cm, $DB->get_record('plagiarism_originality_mod', ['cm' => $output->cmid])]
+                    : null;
         }
+        if ($cmcaches[$output->cmid] === null) {
+            return '';
+        }
+        [$cm, $allow] = $cmcaches[$output->cmid];
 
-        static $isenabled;
-        if (empty($isenabled)) {
+        static $isenabled = null;
+        if ($isenabled === null) {
             $isenabled = $this->utils->is_enabled();
         }
 
@@ -140,7 +146,7 @@ class plagiarism_plugin_originality extends plagiarism_plugin {
             return;
         }
 
-        if (!$isenabled || !$output->cm || !$output->allow->ischeck) {
+        if (!$isenabled || !$output->cm || !$output->allow || empty($output->allow->ischeck)) {
             return;
         }
 

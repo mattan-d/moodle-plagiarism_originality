@@ -301,5 +301,28 @@ function xmldb_plagiarism_originality_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint(true, 2026080500, 'plagiarism', 'originality');
     }
 
+    if ($oldversion < 2026110400) {
+        // Indexes for lookups used by get_links() and submission APIs.
+        // Names match common production workarounds (idx_cm, idx_cm_user) so upgrade skips if already present.
+        $table = new xmldb_table('plagiarism_originality_mod');
+        $index = new xmldb_index('idx_cm', XMLDB_INDEX_NOTUNIQUE, ['cm']);
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        $table = new xmldb_table('plagiarism_originality_sub');
+        $index = new xmldb_index('idx_cm_user', XMLDB_INDEX_NOTUNIQUE, ['cm', 'userid']);
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        $index = new xmldb_index('idx_docid', XMLDB_INDEX_NOTUNIQUE, ['docid']);
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        upgrade_plugin_savepoint(true, 2026110400, 'plagiarism', 'originality');
+    }
+
     return true;
 }
